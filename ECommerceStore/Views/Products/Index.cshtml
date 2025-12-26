@@ -1,0 +1,27 @@
+﻿@model IEnumerable<Product>
+@{
+    ViewData["title"] = "Products";
+}
+
+<div class="container mt-4">
+    <h1>All Products</h1>
+    <div class="row">
+        @foreach (var product in Model)
+        {
+            <div class="col-md-4 mb-4">
+                <div class="card h-100">
+                    <img src="@product.ImageUrl" class="card-img-top" alt="@product.Name" style="height: 200px; object-fit: cover;">
+                    <div class="card-body">
+                        <h5 class="card-title">@product.Name</h5>
+                        <p class="card-text">@product.Description</p>
+                        <p class="text-primary fw-bold">@product.Price.ToString("C")</p>
+                        <span class="badge bg-secondary">@product.Category.Name</span>
+                    </div>
+                    <div class="card-footer">
+                        <a asp-action="Details" asp-route-id="@product.Id" class="btn btn-primary w-100">Show Details</a>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
