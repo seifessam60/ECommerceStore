@@ -23,11 +23,32 @@
                         <p class="text-primary fw-bold">@product.Price.ToString("C")</p>
                         <span class="badge bg-secondary">@product.Category.Name</span>
                     </div>
-                    <div class="card-footer d-flex gap-2">
-                        <a asp-action="Details" asp-route-id="@product.Id" class="btn btn-primary w-100">Show Details</a>
-                        <a asp-action="Edit" asp-route-id="@product.Id" class="btn btn-warning flex-fill">Edit</a>
-                        <a asp-action="Delete" asp-route-id="@product.Id" class="btn btn-danger">Delete</a>
+                    <div class="card-footer">
+                        <div class="d-flex gap-2">
+                            <a asp-action="Details" asp-route-id="@product.Id" class="btn btn-sm btn-primary flex-fill">View Details</a>
+                            @if (product.Stock > 0)
+                            {
+                                <form asp-controller="Cart" asp-action="AddToCart" method="post" class="flex-fill">
+                                    <input type="hidden" name="productId" value="@product.Id" />
+                                    <button type="submit" class="btn btn-sm btn-success w-100">
+                                        <i class="bi bi-cart-plus"></i> Add to Cart
+                                    </button>
+                                </form>
+                            }
+                            else
+                            {
+                                <button class="btn btn-sm btn-secondary flex-fill" disabled>Out of Stock</button>
+                            }
+                        </div>
+                        @if (User.Identity?.IsAuthenticated == true)
+                        {
+                            <div class="d-flex gap-2 mt-2">
+                                <a asp-action="Edit" asp-route-id="@product.Id" class="btn btn-sm btn-warning flex-fill">Edit</a>
+                                <a asp-action="Delete" asp-route-id="@product.Id" class="btn btn-sm btn-danger flex-fill">Delete</a>
+                            </div>
+                        }
                     </div>
+
                 </div>
             </div>
         }
