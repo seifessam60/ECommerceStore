@@ -7,75 +7,70 @@ using System.Threading.Tasks;
 
 namespace ECommerceStore.Controllers
 {
-    public class ProductsController : Controller
+    public class CategoriesController : Controller
     {
         private readonly ApplicationDbContext _context;
 
-        public ProductsController(ApplicationDbContext context)
+        public CategoriesController(ApplicationDbContext context)
         {
             _context = context;
         }
-
         public async Task<IActionResult> Index()
         {
-            var products = await _context.Products.Include(p=>p.Category).ToListAsync();
-
-            return View(products);
+            var categories = await _context.Categories
+                .Include(c => c.Products).ToListAsync();
+            return View(categories);
         }
         public async Task<IActionResult> Details(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-            var product = await _context.Products.Include(p => p.Category).FirstOrDefaultAsync(m => m.Id == id);
-            if (product == null)
-            {
-                return NotFound();
-            }
-            return View(product);
-        }
-        public IActionResult Create()
-        {
-            ViewBag.Categories = new SelectList(_context.Categories, "Id", "Name");
-            return View();
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(Product product)
-        {
-            if (ModelState.IsValid)
-            {
-                product.CreatedAt = DateTime.Now;
-                _context.Add(product);
-                await _context.SaveChangesAsync();
-                return RedirectToAction("Index");
-            }
-            ViewBag.Categories = new SelectList(_context.Categories, "Id", "Name", product.CategoryId);
-            return View(product);
-        }
-
-        public async Task<IActionResult> Edit(int? id)
         {
             if(id == null)
             {
                 return NotFound();
             }
-            var product = await _context.Products.FindAsync(id);
-            if(product == null)
+            var category = await _context.Categories
+                .Include(c => c.Products)
+                .FirstOrDefaultAsync(c => c.Id == id);
+            if(category == null)
             {
                 return NotFound();
             }
-            ViewBag.Categories = new SelectList(_context.Categories, "Id", "Name", product.CategoryId);
-            return View(product);
+            return View(category);
+        }
+        public IActionResult Create()
+        {
+            return View();
+        }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Create(Category category)
+        {
+            if (ModelState.IsValid)
+            {
+                _context.Add(category);
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
+            }
+            return View(category);
+        }
+        public async Task<IActionResult> Edit(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+            var category = await _context.Categories.FindAsync(id);
+            if (category == null)
+            {
+                return NotFound();
+            }
+            return View(category);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, Product product)
+        public async Task<IActionResult> Edit(int id, Category category)
         {
-            if(id != product.Id)
+            if (id != category.Id)
             {
                 return NotFound();
             }
@@ -83,13 +78,13 @@ namespace ECommerceStore.Controllers
             {
                 try
                 {
-                    _context.Products.Update(product);
+                    _context.Categories.Update(category);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
 
-                    if (!ProductExists(product.Id))
+                    if (!CategoryExists(category.Id))
                     {
                         return NotFound();
                     }
@@ -100,38 +95,38 @@ namespace ECommerceStore.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewBag.Categories = new SelectList(_context.Categories, "Id", "Name", product.CategoryId);
-            return View(product);
+            return View(category);
         }
         public async Task<IActionResult> Delete(int? id)
         {
-            if(id == null)
+            if (id == null)
             {
                 return NotFound();
             }
-            var product = await _context.Products.Include(p => p.Category).FirstOrDefaultAsync(m => m.Id == id);
-            if(product == null)
+            var category = await _context.Categories.Include(c => c.Products).FirstOrDefaultAsync(m => m.Id == id);
+            if (category == null)
             {
                 return NotFound();
             }
-            return View(product);
+            return View(category);
         }
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var product = await _context.Products.FindAsync(id);
-            if(product != null)
+            var category = await _context.Categories.FindAsync(id);
+            if (category != null)
             {
-                _context.Remove(product);
+                _context.Remove(category);
                 await _context.SaveChangesAsync();
 
             }
             return RedirectToAction(nameof(Index));
         }
-        public bool ProductExists(int id)
+
+        public bool CategoryExists(int id)
         {
-            return _context.Products.Any(p => p.Id == id);
+            return _context.Categories.Any(c=>c.Id == id);
         }
     }
 }
