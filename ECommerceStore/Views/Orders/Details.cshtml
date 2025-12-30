@@ -1,0 +1,125 @@
+﻿@model ECommerceStore.Models.Order
+
+@{
+    ViewData["Title"] = "Order Details";
+}
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>Order Details #@Model.Id</h1>
+        <a asp-action="Index" class="btn btn-secondary">
+            <i class="bi bi-arrow-left"></i> Back to Orders
+        </a>
+    </div>
+
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card mb-4">
+                <div class="card-header bg-primary text-white">
+                    <h5>Order Information</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <dl class="row">
+                                <dt class="col-sm-5">Order Number:</dt>
+                                <dd class="col-sm-7"><strong>#@Model.Id</strong></dd>
+
+                                <dt class="col-sm-5">Order Date:</dt>
+                                <dd class="col-sm-7">@Model.OrderDate.ToString("dd/MM/yyyy hh:mm tt")</dd>
+
+                                <dt class="col-sm-5">Status:</dt>
+                                <dd class="col-sm-7">
+                                    @switch (Model.Status)
+                                    {
+                                        case ECommerceStore.Models.OrderStatus.Pending:
+                                            <span class="badge bg-warning">Pending</span>
+                                            break;
+                                        case ECommerceStore.Models.OrderStatus.Processing:
+                                            <span class="badge bg-info">Processing</span>
+                                            break;
+                                        case ECommerceStore.Models.OrderStatus.Shipped:
+                                            <span class="badge bg-primary">Shipped</span>
+                                            break;
+                                        case ECommerceStore.Models.OrderStatus.Delivered:
+                                            <span class="badge bg-success">Delivered</span>
+                                            break;
+                                        case ECommerceStore.Models.OrderStatus.Cancelled:
+                                            <span class="badge bg-danger">Cancelled</span>
+                                            break;
+                                    }
+                                </dd>
+                            </dl>
+                        </div>
+                        <div class="col-md-6">
+                            <dl class="row">
+                                <dt class="col-sm-5">Customer Name:</dt>
+                                <dd class="col-sm-7">@Model.CustomerName</dd>
+
+                                <dt class="col-sm-5">Email:</dt>
+                                <dd class="col-sm-7">@Model.Email</dd>
+
+                                <dt class="col-sm-5">Phone Number:</dt>
+                                <dd class="col-sm-7">@Model.Phone</dd>
+                            </dl>
+                        </div>
+                    </div>
+
+                    <hr />
+
+                    <h6>Shipping Address:</h6>
+                    <p class="mb-0">@Model.Address</p>
+                    <p>@Model.City</p>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <h5>Products</h5>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Product</th>
+                                    <th>Price</th>
+                                    <th>Quantity</th>
+                                    <th>Total</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model.OrderItems)
+                                {
+                                    <tr>
+                                        <td>@item.ProductName</td>
+                                        <td>@item.Price.ToString("C")</td>
+                                        <td>@item.Quantity</td>
+                                        <td>@item.Total.ToString("C")</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header bg-success text-white">
+                    <h5>Order Summary</h5>
+                </div>
+                <div class="card-body">
+                    <dl class="row">
+                        <dt class="col-sm-6">Number of Products:</dt>
+                        <dd class="col-sm-6 text-end">@Model.OrderItems.Sum(x => x.Quantity)</dd>
+
+                        <dt class="col-sm-6">Total Amount:</dt>
+                        <dd class="col-sm-6 text-end h5 text-success mb-0">@Model.TotalAmount.ToString("C")</dd>
+                    </dl>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -73,7 +73,7 @@
                             <span class="h5 text-primary fw-bold">@Model.TotalPrice.ToString("C")</span>
                         </div>
                         <div class="d-grid gap-2">
-                            <a href="#" class="btn btn-success btn-lg">
+                            <a asp-controller="Orders" asp-action="Checkout" class="btn btn-success btn-lg">
                                 <i class="bi bi-credit-card"></i> Checkout
                             </a>
                             <a asp-controller="Products" asp-action="Index" class="btn btn-outline-primary">

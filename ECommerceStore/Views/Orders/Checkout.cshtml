@@ -1,0 +1,104 @@
+﻿@model ECommerceStore.Models.Order
+
+@{
+    ViewData["Title"] = "Checkout";
+    var cart = Context.Session.GetObjectFromJson<ECommerceStore.Models.Cart>("ShoppingCart");
+}
+
+@using ECommerceStore.Helpers
+
+<div class="container mt-4">
+    <h1 class="mb-4">
+        <i class="bi bi-credit-card"></i> Checkout
+    </h1>
+
+    <div class="row">
+        <div class="col-md-7">
+            <div class="card">
+                <div class="card-header">
+                    <h4>Shipping Information</h4>
+                </div>
+                <div class="card-body">
+                    <form asp-action="Checkout" method="post">
+                        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                        <div class="mb-3">
+                            <label asp-for="CustomerName" class="form-label">Full Name</label>
+                            <input asp-for="CustomerName" class="form-control" placeholder="Enter your full name" />
+                            <span asp-validation-for="CustomerName" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Email" class="form-label">Email Address</label>
+                            <input asp-for="Email" class="form-control" placeholder="example@email.com" />
+                            <span asp-validation-for="Email" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Phone" class="form-label">Phone Number</label>
+                            <input asp-for="Phone" class="form-control" placeholder="01234567890" />
+                            <span asp-validation-for="Phone" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Address" class="form-label">Address</label>
+                            <textarea asp-for="Address" class="form-control" rows="3" placeholder="Full address details"></textarea>
+                            <span asp-validation-for="Address" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="City" class="form-label">City</label>
+                            <input asp-for="City" class="form-control" placeholder="Cairo" />
+                            <span asp-validation-for="City" class="text-danger"></span>
+                        </div>
+
+                        <div class="d-grid gap-2 mt-4">
+                            <button type="submit" class="btn btn-success btn-lg">
+                                <i class="bi bi-check-circle"></i> Confirm Order
+                            </button>
+                            <a asp-controller="Cart" asp-action="Index" class="btn btn-outline-secondary">
+                                Back to Cart
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-5">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h4>Order Summary</h4>
+                </div>
+                <div class="card-body">
+                    @if (cart != null && cart.Items.Any())
+                    {
+                        @foreach (var item in cart.Items)
+                        {
+                            <div class="d-flex justify-content-between mb-2">
+                                <span>@item.ProductName × @item.Quantity</span>
+                                <span class="fw-bold">@item.Total.ToString("C")</span>
+                            </div>
+                        }
+                        <hr />
+                        <div class="d-flex justify-content-between">
+                            <span class="h5">Grand Total:</span>
+                            <span class="h5 text-primary fw-bold">@cart.TotalPrice.ToString("C")</span>
+                        </div>
+                    }
+                </div>
+            </div>
+
+            <div class="alert alert-info mt-3">
+                <i class="bi bi-info-circle"></i>
+                <strong>Note:</strong> We will contact you within 24 hours to confirm your order.
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

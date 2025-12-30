@@ -1,0 +1,90 @@
+﻿@model ECommerceStore.Models.Order
+
+@{
+    ViewData["Title"] = "Order Confirmation";
+}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card border-success">
+                <div class="card-header bg-success text-white text-center">
+                    <i class="bi bi-check-circle" style="font-size: 3rem;"></i>
+                    <h2 class="mt-2">Order Placed Successfully!</h2>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-success text-center">
+                        <h4>Thank you, @Model.CustomerName</h4>
+                        <p>Order Number: <strong>#@Model.Id</strong></p>
+                        <p>Order Date: <strong>@Model.OrderDate.ToString("dd/MM/yyyy hh:mm tt")</strong></p>
+                    </div>
+
+                    <h5 class="mb-3">Shipping Details:</h5>
+                    <dl class="row">
+                        <dt class="col-sm-4">Name:</dt>
+                        <dd class="col-sm-8">@Model.CustomerName</dd>
+
+                        <dt class="col-sm-4">Email:</dt>
+                        <dd class="col-sm-8">@Model.Email</dd>
+
+                        <dt class="col-sm-4">Phone:</dt>
+                        <dd class="col-sm-8">@Model.Phone</dd>
+
+                        <dt class="col-sm-4">Address:</dt>
+                        <dd class="col-sm-8">@Model.Address</dd>
+
+                        <dt class="col-sm-4">City:</dt>
+                        <dd class="col-sm-8">@Model.City</dd>
+                    </dl>
+
+                    <hr />
+
+                    <h5 class="mb-3">Ordered Products:</h5>
+                    <div class="table-responsive">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Product</th>
+                                    <th>Price</th>
+                                    <th>Quantity</th>
+                                    <th>Total</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model.OrderItems)
+                                {
+                                    <tr>
+                                        <td>@item.ProductName</td>
+                                        <td>@item.Price.ToString("C")</td>
+                                        <td>@item.Quantity</td>
+                                        <td>@item.Total.ToString("C")</td>
+                                    </tr>
+                                }
+                            </tbody>
+                            <tfoot>
+                                <tr class="table-primary">
+                                    <th colspan="3" class="text-end">Grand Total:</th>
+                                    <th>@Model.TotalAmount.ToString("C")</th>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+
+                    <div class="alert alert-info mt-4">
+                        <i class="bi bi-info-circle"></i>
+                        A confirmation email will be sent to your registered email address. We will contact you shortly to confirm the order and shipping.
+                    </div>
+
+                    <div class="d-grid gap-2 mt-4">
+                        <a asp-action="Details" asp-route-id="@Model.Id" class="btn btn-primary">
+                            View Order Details
+                        </a>
+                        <a asp-controller="Products" asp-action="Index" class="btn btn-outline-primary">
+                            Continue Shopping
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
